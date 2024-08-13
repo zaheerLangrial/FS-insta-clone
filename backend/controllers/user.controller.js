@@ -7,6 +7,9 @@ import bcryptjs from 'bcryptjs';
 export const Register = async (req, res) => {
     try {
         const {username, email, password} = req.body;
+        console.log('username', username)
+        console.log('email', email)
+        console.log('password', password)
         if(!username || !email || !password) {
             return res.status(401).json({
                 message: 'Something is missing, please check!',
@@ -102,12 +105,77 @@ export const logout = async (_, res) => {
 export const getProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        let user = await User.findById(userId)
+        let user = await User.findById(userId).select('-password')
         return res.status(200).json({
             user,
             success: true
         })
     } catch (error) {
         
+    }
+}
+
+export const getSuggestionUsers = async (req, res) => {
+    try {
+        const suggestedUsers = await User.find({_id: {$ne: req.id}}).select('-password');
+        if(!suggestedUsers) {
+            return res.status(400).json({
+                message: 'Currently do not have any users',
+                success: false
+            })
+        };
+        return res.status(200).json({
+            success: true,
+            users: suggestedUsers
+        })
+    } catch (error) {
+        console.log('error in getSuggestion Users', error);
+    }
+}
+
+
+export const followOrUnFollow = async (req, res) => {
+    try {
+        const followKarneWala = req.id;
+        const jisKoFollowKiya = req.params.id;
+        if(followKarneWala === jisKoFollowKiya) { 
+            return res.status(400).json({
+                message: 'You cannot follow/unfollow yourself',
+                success: false
+            });
+        }
+
+        const user = await User.findById(followKarneWala)
+        const targetUser = await User.findById(jisKoFollowKiya);
+
+        if(!user || !targetUser) {
+            return req.status(400).json({
+                message: 'User not found',
+                success: false
+            });
+        }
+
+        const isFollowing = user.following.includes(targetUser._id);
+        if(isFollowing){
+            await Promise.all([
+                User.updateOne({_id: followKarneWala},{$pull: {following: jisKoFollowKiya}}),
+                User.updateOne({_id: jisKoFollowKiya}, {$pull: {followers: followKarneWala}}),
+            ]);
+            return res.status(200).json({
+                message: 'Unfollowed successfully', 
+                success: true
+            })
+        }else {
+            await Promise.all([
+                User.updateOne({_id: followKarneWala}, {$push: {following: jisKoFollowKiya}}),
+                User.updateOne({_id: jisKoFollowKiya}, {$push: {followers: followKarneWala}}),
+            ])
+            return res.status(200).json({
+                message: 'Followed Successfully',
+                success: true
+            })
+        }
+    } catch (error) {
+        console.log('error in follow or unfollowing', error)
     }
 }

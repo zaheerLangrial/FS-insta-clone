@@ -1,12 +1,15 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import bodyParser from 'body-parser';
 import dotenv from "dotenv";
 import { ConnectDB } from "./utils/db.js";
 dotenv.config();
+import userRoute from './routes/user.route.js';
 
 const app = express();
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
   urlencoded({
@@ -26,6 +29,13 @@ app.get("/", (_, res) => {
     success: true,
   });
 });
+
+
+
+
+// Api Routes
+
+app.use('/api/v1/user', userRoute)
 
 app.listen(process.env.PORT, () => {
   ConnectDB();
