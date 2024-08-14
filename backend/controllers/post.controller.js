@@ -1,6 +1,6 @@
 // import sharp from "sharp";
-import { Post } from "../models/post.model";
-import { User } from "../models/user.model";
+import { Post } from "../models/post.model.js";
+import { User } from "../models/user.model.js";
 
 export const addNewPost = async (req, res) => {
   try {
@@ -40,5 +40,160 @@ export const addNewPost = async (req, res) => {
     });
   } catch (error) {
     console.log("error", error);
+  }
+};
+
+export const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate({ path: "author", select: "username, profilePicture" })
+      .populate({
+        path: "comments",
+        sort: { createdAt },
+        populate: {
+          path: "author",
+          select: "username, profilePicture",
+        },
+      });
+
+    return res.status(201).json({
+      posts,
+      success: true,
+    });
+  } catch (error) {
+    console.log("error in get all post api", error);
+  }
+};
+
+export const getUserPosts = async (req, res) => {
+  try {
+    const userId = req.id;
+    const posts = await Post.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "author",
+        select: "username, profilePicture",
+      })
+      .populate({
+        path: "comments",
+        sort: { createdAt: -1 },
+        populate: {
+          path: "author",
+          select: "username, profilePicture",
+        },
+      });
+
+    return res.status(200).json({
+      posts,
+      success: true,
+    });
+  } catch (error) {
+    console.log("error in get user posts", error);
+  }
+};
+
+export const likePost = async (req, res) => {
+  try {
+    const postLikeaKarneWalyKiId = req.id;
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+        success: false,
+      });
+    }
+
+    await post.updateOne({ $addToSet: { likes: postLikeaKarneWalyKiId } });
+    await post.save();
+
+    return res.status(200).json({
+      message: "Post liked",
+      success: true,
+    });
+  } catch (error) {
+    console.log("error in like post api", error);
+  }
+};
+
+export const DisLikePost = async (req, res) => {
+  try {
+    const postLikeaKarneWalyKiId = req.id;
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+        success: false,
+      });
+    }
+
+    await post.updateOne({ $pull: { likes: postLikeaKarneWalyKiId } });
+    await post.save();
+
+    return res.status(200).json({
+      message: "Post disliked",
+      success: true,
+    });
+  } catch (error) {
+    console.log("error in like post api", error);
+  }
+};
+export const addComment = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const commentKarneWalyUserKiId = req.id;
+    const { text } = req.body;
+
+    const post = await Post.findById(postId);
+
+    if (!text)
+      return res
+        .status(400)
+        .json({ message: "text is required", success: false });
+
+    const comment = await Comment.create({
+      text,
+      author: commentKarneWalyUserKiId,
+      post: postId,
+    }).populate({
+      path: "author",
+      select: "username, profilePicture",
+    });
+
+    post.comments.push(comment._id);
+    await post.save();
+
+    return res.status(201).json({
+      message: "Comment Added",
+      comment,
+      success,
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const getCommentsOfPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    const comments = await Comment.find({ post: postId }).populate(
+      "author",
+      "username, profilePicture"
+    );
+
+    if (!comments)
+      return res
+        .status(404)
+        .json({ message: "No comments found", success: false });
+
+    return res.status(200).json({
+      success: true,
+      comments,
+    });
+  } catch (error) {
+    console.log("error in get comment of post", error);
   }
 };
