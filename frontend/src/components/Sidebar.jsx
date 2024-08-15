@@ -5,7 +5,7 @@ import { CopyIcon, HeartIcon, HomeIcon, MenuIcon, MessagesSquareIcon, PlusCircle
 const Sidebar = () => {
   return (
     <>
-      <div className="w-1/6 border-r h-screen flex flex-col justify-between ">
+      <div className="w-1/5 sticky top-0 border-r h-screen flex flex-col justify-between ">
         <div className="h-[130px]">
           <img src="src/assets/Insta-signup-logo.png" alt="Insta logo" />
         </div>

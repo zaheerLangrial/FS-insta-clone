@@ -18,27 +18,37 @@ function App() {
 
   const browserRouter = createBrowserRouter([
     {
-      path: '/',
+      path: "/",
       element: <MainLayout />,
       children: [
         {
-          path: '/',
-          element: <Home />
+          path: "/",
+          element: <Home />,
         },
-      ]
+      ],
     },
     {
-      path: '/signin',
-      element: <Signin />
+      path: "/signin",
+      element: <Signin />,
     },
     {
-      path: '/signup',
-      element: <Signup />
-    }
-  ])
+      path: "/signup",
+      element: <Signup />,
+    },
+    {
+      path: "/*",
+      element: (
+        <>
+          <div className="flex justify-center items-center h-screen">
+            Page not found
+          </div>
+        </>
+      ),
+    },
+  ]);
   return (
     <>
-    <RouterProvider router={browserRouter} />
+      <RouterProvider router={browserRouter} />
     </>
   );
 }
