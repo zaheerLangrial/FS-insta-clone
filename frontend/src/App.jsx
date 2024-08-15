@@ -1,11 +1,44 @@
+import { useEffect, useState } from "react";
 import "./App.css";
-import { Button } from "./components/ui/button";
+import Home from "./pages/Home";
+import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Cookies from "js-cookie";
+import MainLayout from "./components/MainLayout";
 
 function App() {
+  const [user, setUser] = useState();
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setUser(token);
+    }
+  });
+
+  const browserRouter = createBrowserRouter([
+    {
+      path: '/',
+      element: <MainLayout />,
+      children: [
+        {
+          path: '/',
+          element: <Home />
+        },
+      ]
+    },
+    {
+      path: '/signin',
+      element: <Signin />
+    },
+    {
+      path: '/signup',
+      element: <Signup />
+    }
+  ])
   return (
     <>
-     <Signup />
+    <RouterProvider router={browserRouter} />
     </>
   );
 }

@@ -4,29 +4,24 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const Signup = () => {
+const Signin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const handleSignup = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(
-        "http://localhost:8500/api/v1/user/register",
-        {
-          email: e.target.email.value,
-          username: e.target.username.value,
-          password: e.target.password.value,
-        }
-      );
-      if (res.data.success === true) {
-        e.target.email.value = "";
-        e.target.username.value = "";
-        e.target.password.value = "";
+      const res = await axios.post("http://localhost:8500/api/v1/user/login", {
+        email: e.target.email.value,
+        password: e.target.password.value,
+      });
+      if (res.data.success) {
+        (e.target.email.value = ""), (e.target.password.value = "");
       }
+      console.log("response", res.data);
       toast(res.data.message);
-      setLoading(false);
       navigate("/");
+      setLoading(false);
     } catch (error) {
       toast(error.response.data.message);
       setLoading(false);
@@ -40,13 +35,10 @@ const Signup = () => {
           alt="Insta logo"
           className="w-full h-[150px] object-contain mt-6"
         />
-        <p className="text-center w-[90%] mx-auto text-base font-semibold text-[#737373]">
-          Sign up to see photos and videos from your friends.
-        </p>
 
         <form
-          className=" w-[90%] mx-auto flex flex-col gap-1 mt-10"
-          onSubmit={handleSignup}
+          className=" w-[90%] mx-auto flex flex-col gap-1"
+          onSubmit={handleLogin}
         >
           <input
             type="email"
@@ -55,37 +47,32 @@ const Signup = () => {
             placeholder="Enter your email"
           />
           <input
-            type="text"
-            name="username"
-            className=" bg-[#FAFAFA] w-full p-2 border border-gray-300 rounded-md outline-none text-gray-500"
-            placeholder="Enter your name"
-          />
-          <input
-            name="password"
             type="password"
+            name="password"
             className=" bg-[#FAFAFA] w-full p-2 border border-gray-300 rounded-md outline-none text-gray-500"
             placeholder="Enter your password"
           />
 
-          <div className="mt-6 mb-10">
+          <div className="mt-5 mb-10">
             <button
               disabled={loading}
+              type="submit"
               className="bg-blue-500 text-white py-2 w-full text-center rounded-lg hover:bg-blue-600 flex justify-center items-center disabled:bg-blue-950"
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign up
+              Log in
             </button>
           </div>
         </form>
       </div>
       <div className="border-1 border w-[400px] rounded-md mt-3 p-6 text-center text-[#737373]">
-        <p className="text-sm">
+        <p className=" text-sm">
           Have an account?{" "}
           <Link
-            to={"/signin"}
+            to={"/signup"}
             className="font-semibold text-blue-500 cursor-pointer"
           >
-            Log in
+            Sign up
           </Link>
         </p>
       </div>
@@ -93,4 +80,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Signin;
