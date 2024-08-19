@@ -1,26 +1,36 @@
 // import sharp from "sharp";
+import sharp from "sharp";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const addNewPost = async (req, res) => {
   try {
-    const { caption, imageUrl } = req.body;
+    const { caption } = req.body;
+    const image = req.file;
+    console.log("image===>", image);
+    console.log("caption===>", caption);
+
     const authorId = req.id;
 
-    if (!imageUrl)
+    if (!image)
       return res.status(400).json({
         message: "Image required",
         success: false,
       });
 
-    // const optimizedImageBuffer = await sharp(image.buffer)
-    //   .resize({ width: 800, height: 800, fit: "inside" })
-    //   .toFormat("jpeg", { quality: 80 })
-    //   .toBuffer();
+    const optimizedImageBuffer = await sharp(image.buffer)
+      .resize({ width: 800, height: 800, fit: "inside" })
+      .toFormat("jpeg", { quality: 80 })
+      .toBuffer();
 
+    const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString(
+      "base64"
+    )}`;
+    const cloudResponse = await cloudinary.uploader.upload(fileUri);
     const post = await Post.create({
       caption,
-      image: imageUrl,
+      image: cloudResponse.secure_url,
       author: authorId,
     });
 

@@ -1,8 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { BookMarkedIcon, HeartIcon, Share2 } from "lucide-react";
@@ -10,8 +6,8 @@ import { BiComment } from "react-icons/bi";
 import { CiMenuKebab } from "react-icons/ci";
 
 const Post = ({ post }) => {
-  console.log('post===>', post)
-  const [comment, setComment] = useState('')
+  console.log("post===>", post);
+  const [comment, setComment] = useState("");
   return (
     <div className="max-w-lg mx-auto bg-white border rounded-lg overflow-hidden shadow-lg">
       {/* Post Header */}
@@ -28,23 +24,15 @@ const Post = ({ post }) => {
         <div>
           <Dialog>
             <DialogTrigger asChild>
-            <button className="focus:outline-none">
-            <CiMenuKebab className="text-black" />
-          </button>
+              <button className="focus:outline-none">
+                <CiMenuKebab className="text-black" />
+              </button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[250px]">
-              <Button className='mt-3'>
-                Unfollow
-              </Button>
-              <Button>
-                Add to Favorites
-              </Button>
-              <Button>
-                Copy link
-              </Button>
-              <Button>
-                Go to post
-              </Button>
+              <Button className="mt-3">Unfollow</Button>
+              <Button>Add to Favorites</Button>
+              <Button>Copy link</Button>
+              <Button>Go to post</Button>
             </DialogContent>
           </Dialog>
         </div>
@@ -69,8 +57,8 @@ const Post = ({ post }) => {
           </button>
         </div>
         <button className="focus:outline-none">
-            <BookMarkedIcon />
-          </button>
+          <BookMarkedIcon />
+        </button>
       </div>
 
       <div className="px-4">
@@ -83,10 +71,14 @@ const Post = ({ post }) => {
       </div>
 
       <div className="px-4 flex">
-        <input type="text" placeholder="Enter your comment" className="outline-none w-full" value={comment} onChange={(e) => setComment(e.target.value.trim())} />
-        {
-          comment && <button className=" font-bold text-blue-500">Post</button>
-        }
+        <input
+          type="text"
+          placeholder="Enter your comment"
+          className="outline-none w-full"
+          value={comment}
+          onChange={(e) => setComment(e.target.value.trim())}
+        />
+        {comment && <button className=" font-bold text-blue-500">Post</button>}
       </div>
     </div>
   );

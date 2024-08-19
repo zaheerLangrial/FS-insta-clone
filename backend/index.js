@@ -1,13 +1,13 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { ConnectDB } from "./utils/db.js";
 dotenv.config();
-import userRoute from './routes/user.route.js';
-import postRoute from './routes/post.route.js';
-import messageRoute from './routes/message.route.js';
+import userRoute from "./routes/user.route.js";
+import postRoute from "./routes/post.route.js";
+import messageRoute from "./routes/message.route.js";
 
 const app = express();
 app.use(express.json());
@@ -32,14 +32,11 @@ app.get("/", (_, res) => {
   });
 });
 
-
-
-
 // Api Routes
 
-app.use('/api/v1/user', userRoute)
-app.use('/api/v1/post', postRoute)
-app.use('/api/v1/message', messageRoute)
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/post", postRoute);
+app.use("/api/v1/message", messageRoute);
 
 app.listen(process.env.PORT, () => {
   ConnectDB();
