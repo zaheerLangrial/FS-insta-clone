@@ -1,10 +1,13 @@
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { setAuthUser } from "../redux/authSlice";
 
 const Signin = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const handleLogin = async (e) => {
@@ -18,7 +21,7 @@ const Signin = () => {
       if (res.data.success) {
         (e.target.email.value = ""), (e.target.password.value = "");
       }
-      console.log("response", res.data);
+      dispatch(setAuthUser(res.data?.user))
       toast(res.data.message);
       navigate("/");
       setLoading(false);

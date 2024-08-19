@@ -7,7 +7,7 @@ export const addNewPost = async (req, res) => {
     const { caption, imageUrl } = req.body;
     const authorId = req.id;
 
-    if (!image)
+    if (!imageUrl)
       return res.status(400).json({
         message: "Image required",
         success: false,

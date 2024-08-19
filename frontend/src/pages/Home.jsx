@@ -1,21 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MiniProfile from "../components/MiniProfile";
 import SuggestedList from "../components/SuggestedList";
 import Post from "../components/Post";
+import axios from "axios";
+import { toast } from "sonner";
 
 const Home = () => {
+  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+
+  // const fetchPosts = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios.get("http://localhost:8500/api/v1/post/all" , {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data'
+  //       },
+  //       //  withCredentials: true
+  //       });
+  //     setPosts(res.data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     toast(error.response.data.message);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchPosts();
+  // },[]);
   return (
     <div className="w-full flex">
       {/* Feeds */}
       <div className="flex-1 mt-10">
-        <Post
-          avatar={
-            "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1723593600&semt=ais_hybrid"
-          }
-          username={"Zaheer Ahmad"}
-          image={"https://imgupscaler.com/images/samples/Imgupscaler_2_2x.webp"}
-          caption={"This is by me first post in insta clone"}
-        />
+        {posts.map((post) => {
+          return <Post post={post} />;
+        })}
       </div>
 
       <div className="w-1/3 border-l p-6 h-screen">

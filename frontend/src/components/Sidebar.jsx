@@ -1,8 +1,19 @@
-import React from "react";
-import { CopyIcon, HeartIcon, HomeIcon, MenuIcon, MessagesSquareIcon, PlusCircle, SearchIcon, UserCircle, VideoIcon } from "lucide-react";
-
+import React, { useState } from "react";
+import {
+  CopyIcon,
+  HeartIcon,
+  HomeIcon,
+  MenuIcon,
+  MessagesSquareIcon,
+  PlusCircle,
+  SearchIcon,
+  UserCircle,
+  VideoIcon,
+} from "lucide-react";
+import CreatePostModal from "./CreatePostModal";
 
 const Sidebar = () => {
+  const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
   return (
     <>
       <div className="w-1/5 sticky top-0 border-r h-screen flex flex-col justify-between ">
@@ -35,7 +46,10 @@ const Sidebar = () => {
             <HeartIcon />
             <span>Notifications</span>
           </button>
-          <button className="flex justify-start gap-2 text-base font-bold items-center p-3 hover:bg-gray-200 rounded-xl">
+          <button
+            onClick={() => setOpenCreatePostModal(true)}
+            className="flex justify-start gap-2 text-base font-bold items-center p-3 hover:bg-gray-200 rounded-xl"
+          >
             <PlusCircle />
             <span>Create</span>
           </button>
@@ -52,6 +66,10 @@ const Sidebar = () => {
           </button>
         </div>
       </div>
+      <CreatePostModal
+        open={openCreatePostModal}
+        setOpen={setOpenCreatePostModal}
+      />
     </>
   );
 };

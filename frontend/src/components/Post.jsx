@@ -1,17 +1,17 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import React from "react";
+} from "@/components/ui/dialog";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
-import { DotIcon, MenuSquare } from "lucide-react";
+import { BookMarkedIcon, HeartIcon, Share2 } from "lucide-react";
+import { BiComment } from "react-icons/bi";
+import { CiMenuKebab } from "react-icons/ci";
 
-const Post = ({ username, avatar, image, caption }) => {
+const Post = ({ post }) => {
+  console.log('post===>', post)
+  const [comment, setComment] = useState('')
   return (
     <div className="max-w-lg mx-auto bg-white border rounded-lg overflow-hidden shadow-lg">
       {/* Post Header */}
@@ -28,43 +28,24 @@ const Post = ({ username, avatar, image, caption }) => {
         <div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost">
-                <MenuSquare />
-              </Button>
+            <button className="focus:outline-none">
+            <CiMenuKebab className="text-black" />
+          </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="name" className="text-right">
-              Name
-            </label>
-            <input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="username" className="text-right">
-              Username
-            </label>
-            <input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
+            <DialogContent className="sm:max-w-[250px]">
+              <Button className='mt-3'>
+                Unfollow
+              </Button>
+              <Button>
+                Add to Favorites
+              </Button>
+              <Button>
+                Copy link
+              </Button>
+              <Button>
+                Go to post
+              </Button>
+            </DialogContent>
           </Dialog>
         </div>
       </div>
@@ -78,60 +59,34 @@ const Post = ({ username, avatar, image, caption }) => {
       <div className="px-4 py-2 flex justify-between items-center">
         <div className="flex space-x-4">
           <button className="focus:outline-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 15l7-7 7 7"
-              />
-            </svg>
+            <HeartIcon />
           </button>
           <button className="focus:outline-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 8h16M4 12h16M4 16h16"
-              />
-            </svg>
+            <BiComment size={22} />
           </button>
           <button className="focus:outline-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 8l7.386 4.553a1 1 0 001.228 0L19 8m0 0a12.042 12.042 0 01-3 7.563A11.973 11.973 0 0112 20.5a11.973 11.973 0 01-4-4.937A12.042 12.042 0 015 8"
-              />
-            </svg>
+            <Share2 />
           </button>
         </div>
+        <button className="focus:outline-none">
+            <BookMarkedIcon />
+          </button>
       </div>
 
+      <div className="px-4">
+        <span className="font-semibold">100 Likes</span>
+      </div>
       {/* Post Caption */}
-      <div className="px-4 py-2">
-        <span className="font-semibold">{username} </span>
+      <div className="px-4">
+        <span className="font-semibold">{username} : </span>
         <span>{caption}</span>
+      </div>
+
+      <div className="px-4 flex">
+        <input type="text" placeholder="Enter your comment" className="outline-none w-full" value={comment} onChange={(e) => setComment(e.target.value.trim())} />
+        {
+          comment && <button className=" font-bold text-blue-500">Post</button>
+        }
       </div>
     </div>
   );
