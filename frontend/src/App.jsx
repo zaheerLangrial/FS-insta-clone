@@ -8,13 +8,7 @@ import Cookies from "js-cookie";
 import MainLayout from "./components/MainLayout";
 
 function App() {
-  const [user, setUser] = useState();
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (token) {
-      setUser(token);
-    }
-  });
+
 
   const browserRouter = createBrowserRouter([
     {

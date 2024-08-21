@@ -14,22 +14,34 @@ const Signin = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:8500/api/v1/user/login", {
-        email: e.target.email.value,
-        password: e.target.password.value,
-      });
+      const res = await axios.post(
+        "http://localhost:8500/api/v1/user/login",
+        {
+          email: e.target.email.value,
+          password: e.target.password.value,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
       if (res.data.success) {
-        (e.target.email.value = ""), (e.target.password.value = "");
+        e.target.email.value = "";
+        e.target.password.value = "";
       }
-      dispatch(setAuthUser(res.data?.user))
+      dispatch(setAuthUser(res.data?.user));
       toast(res.data.message);
       navigate("/");
-      setLoading(false);
     } catch (error) {
-      toast(error.response.data.message);
+      console.error('Error:', error.response ? error.response.data : error.message);
+      toast(error.response?.data?.message || 'An error occurred');
+    } finally {
       setLoading(false);
     }
   };
+  
   return (
     <div className="flex flex-col justify-center items-center h-[100vh]">
       <div className="border-1 border w-[400px] rounded-md">

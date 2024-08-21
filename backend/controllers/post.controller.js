@@ -3,76 +3,92 @@ import sharp from "sharp";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
 import cloudinary from "../utils/cloudinary.js";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 export const addNewPost = async (req, res) => {
-  try {
-    const { caption } = req.body;
-    const image = req.file;
-    console.log("image===>", image);
-    console.log("caption===>", caption);
-
-    const authorId = req.id;
-
-    if (!image)
+  upload.single("image")(req, res, async (err) => {
+    if (err) {
       return res.status(400).json({
-        message: "Image required",
+        message: "Image upload failed",
         success: false,
       });
-
-    const optimizedImageBuffer = await sharp(image.buffer)
-      .resize({ width: 800, height: 800, fit: "inside" })
-      .toFormat("jpeg", { quality: 80 })
-      .toBuffer();
-
-    const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString(
-      "base64"
-    )}`;
-    const cloudResponse = await cloudinary.uploader.upload(fileUri);
-    const post = await Post.create({
-      caption,
-      image: cloudResponse.secure_url,
-      author: authorId,
-    });
-
-    const user = await User.findById(authorId);
-
-    if (user) {
-      user.posts.push(post._id);
-      await user.save();
     }
 
-    await post.populate({ path: "author", select: "-password" });
+    try {
+      const { caption } = req.body;
+      const image = req.file;
+      const authorId = req.id;
+      console.log("image===>", image);
+      console.log("caption===>", caption);
+      console.log("authorId===>", authorId);
 
-    return res.status(201).json({
-      message: "New post added",
-      post,
-      success: true,
-    });
-  } catch (error) {
-    console.log("error", error);
-  }
+      if (!image)
+        return res.status(400).json({
+          message: "Image required",
+          success: false,
+        });
+
+      const optimizedImageBuffer = await sharp(image.buffer)
+        .resize({ width: 800, height: 800, fit: "inside" })
+        .toFormat("jpeg", { quality: 80 })
+        .toBuffer();
+
+      const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString(
+        "base64"
+      )}`;
+      const cloudResponse = await cloudinary.uploader.upload(fileUri);
+      const post = await Post.create({
+        caption,
+        image: cloudResponse.secure_url,
+        author: authorId,
+      });
+
+      const user = await User.findById(req.id);
+
+      if (user) {
+        user.posts.push(post._id);
+        await user.save();
+      }
+
+      await post.populate({ path: "author", select: "-password" });
+
+      return res.status(201).json({
+        message: "New post added",
+        post,
+        success: true,
+      });
+    } catch (error) {
+      console.log("error", error);
+      return res.status(500).json({
+        message: "Server error",
+        success: false,
+      });
+    }
+  });
 };
 
 export const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "username, profilePicture" })
+      .populate({ path: "author", select: "username profilePicture" })
       .populate({
         path: "comments",
-        sort: { createdAt },
+        sort: { createdAt: -1 },
         populate: {
           path: "author",
-          select: "username, profilePicture",
+          select: "username profilePicture",
         },
       });
-
-    return res.status(201).json({
+    return res.status(200).json({
       posts,
       success: true,
     });
   } catch (error) {
-    console.log("error in get all post api", error);
+    console.log(error);
   }
 };
 

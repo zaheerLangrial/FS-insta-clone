@@ -1,27 +1,63 @@
-import jwt from 'jsonwebtoken';
-
-const isAuthenticated = async (req, res, next) => {
+import jwt from "jsonwebtoken";
+const isAuthenticated = async (req,res,next)=>{
     try {
         const token = req.cookies.token;
-        if(!token) {
+        console.log('token ====>', token)
+        if(!token){
             return res.status(401).json({
-                message: 'User not authenticated',
-                success: false
+                message:'User not authenticated',
+                success:false
             });
         }
-
         const decode = await jwt.verify(token, process.env.SECRET_KEY);
-        if(!decode) {
+        if(!decode){
             return res.status(401).json({
-                message: 'Invalid',
-                success: false
-            })
+                message:'Invalid',
+                success:false
+            });
         }
         req.id = decode.userId;
-        next()
+        next();
     } catch (error) {
-        console.log('middleware Error', error)
+        console.log(error);
     }
 }
+export default isAuthenticated;
 
-export default isAuthenticated
+
+
+
+
+
+
+
+
+
+// import jwt from 'jsonwebtoken';
+
+// const isAuthenticated = async (req, res, next) => {
+//     try {
+//         const token = req.cookies.token;
+//         console.log('token ====>', token)
+//         if(!token) {
+//             return res.status(401).json({
+//                 message: 'User not authenticated',
+//                 success: false
+//             });
+//         }
+
+//         const decode = await jwt.verify(token, process.env.SECRET_KEY);
+//         if(!decode) {
+//             return res.status(401).json({
+//                 message: 'Invalid',
+//                 success: false
+//             })
+//         }
+//         req.id = decode.userId;
+//         next()
+//     } catch (error) {
+//         console.log('middleware Error', error)
+//     }
+// }
+
+// export default isAuthenticated

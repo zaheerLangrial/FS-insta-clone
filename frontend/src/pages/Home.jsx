@@ -9,26 +9,30 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
 
-  // const fetchPosts = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await axios.get("http://localhost:8500/api/v1/post/all" , {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       },
-  //       //  withCredentials: true
-  //       });
-  //     setPosts(res.data);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     toast(error.response.data.message);
-  //   }
-  // };
+  const fetchPosts = async () => {
+    console.log("Start");
+    try {
+      setLoading(true);
+      console.log("loading");
+      const res = await axios.get("http://localhost:8500/api/v1/post/all", {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      console.log("response Data ====>", res.data);
+      setPosts(res.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast(error.response.data.message);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchPosts();
-  // },[]);
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   return (
     <div className="w-full flex">
       {/* Feeds */}

@@ -7,19 +7,19 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const CreatePostModal = ({ open, setOpen }) => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [postData, setPostData] = useState({
     caption: "",
     image: "",
   });
-  const [imagePreview, setImagePreview] = useState('')
+  const [imagePreview, setImagePreview] = useState("");
   const imgRef = useRef(null);
 
   const handleOnChangePost = async (e) => {
     const files = e.target.files;
     if (files.length > 0) {
       const file = files[0];
-      setPostData({...postData, image: file})
+      setPostData({ ...postData, image: file });
 
       if (file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -41,28 +41,33 @@ const CreatePostModal = ({ open, setOpen }) => {
   };
 
   const handleCreatePost = async () => {
-    const formData = new FormData();
-    if(postData?.caption) formData.append('caption', postData?.caption)
-    if(postData?.image) formData.append('caption', postData?.image)
+    console.log('Post DAta =====>' ,postData)
     try {
-      setLoading(true)
-      const res = await axios.post('http://localhost:8500/api/v1/post/addpost' , formData , {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      setLoading(true);
+      const res = await axios.post(
+        "http://localhost:8500/api/v1/post/addpost",
+        {
+          image: postData.image,
+          caption: postData.caption
         },
-        withCredentials: true
-      })
-      console.log("response ====>" , res.data)
-      setLoading(false)
-      toast(res.data.message)
-      setImagePreview('')
-      setOpen(false)
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log("response ====>", res.data);
+      setLoading(false);
+      toast(res.data.message);
+      setImagePreview("");
+      setOpen(false);
     } catch (error) {
       // toast('')
-      console.log('error', error)
-      toast(error.message)
+      console.log("error", error);
+      toast(error.message);
     }
-  }
+  };
   return (
     <Dialog open={open}>
       <DialogContent onInteractOutside={() => setOpen(false)}>

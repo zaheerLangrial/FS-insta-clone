@@ -109,7 +109,7 @@ export const login = async (req, res) => {
     const populatePosts = await Promise.all(
       validUser.posts.map(async (postId) => {
         const post = await Post.findById(postId);
-        if (post.author.equals(user._id)) {
+        if (post.author.equals(validUser._id)) {
           return post;
         }
         return null;

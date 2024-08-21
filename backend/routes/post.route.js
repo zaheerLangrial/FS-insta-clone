@@ -14,7 +14,7 @@ import {
 
 const router = express.Router();
 
-router.route("/addpost").post(isAuthenticated, addNewPost);
+router.route("/addpost").post(isAuthenticated ,addNewPost);
 router.route("/all").get(isAuthenticated, getAllPosts);
 router.route("/userpost/all").get(isAuthenticated, getUserPosts);
 router.route("/:id/like").get(isAuthenticated, likePost);
